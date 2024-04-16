@@ -83,8 +83,8 @@ float read_brush_speed(int num, unsigned int counter_brush1, unsigned int counte
 {
   // Berechnung der Geschwindigkeit alle 1000 Millisekunden
   unsigned long currentTime = millis();
-  float brush_rotations= 0.0;
-  float brush_speed= 0.0;
+  float brush_rotations = 0.0;
+  float brush_speed = 0.0;
   if(num == 1){ //Brush 1
     brush_rotations = float(counter_brush1)/20;
     brush_speed = brush_rotations * 60; //Umdrehungen pro Minute
@@ -111,7 +111,7 @@ float read_acceleration(MPU6050 &mpu)
   mpu.getAcceleration(&ax, &ay, &az);
   float ax_in_g = ax/16384.0;
   float ay_in_g = ay/16384.0;
-  float az_in_g = (az/16384.0)+0.2; 
+  float az_in_g = (az/16384.0)+0.2;
 
   return az_in_g;
 }
