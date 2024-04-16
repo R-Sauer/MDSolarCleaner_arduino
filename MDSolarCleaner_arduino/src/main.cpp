@@ -2,6 +2,7 @@
 #include <Wire.h> //fuer Gyro und Surface Temperature
 #include <Adafruit_MLX90614.h> //MLX90614 von Adafruit
 #include <MPU6050.h> //MPU6050 von Electronics Cats
+#include <SPI.h>
 
 
 //Air_Dust
@@ -80,6 +81,8 @@ int read_air_dust_density();
 float read_brush_speed(int num);
 float read_flow_velocity();
 float read_acceleration();
+void countRotation_brush1();
+void countRotation_brush2();
 bool send_data_to_raspy(float distance_up, float distance_down, float distance_right,
                          float distance_left, float temperature, float surface_temp,
                          float humidity, int air_dust_density, float brush1_speed,
