@@ -14,3 +14,5 @@
 //US-Sensor LEFT
 #define US_LEFT_TRIG 10
 #define US_LEFT_ECHO 11
+
+#define MEASURE_TIME_PIN 13
