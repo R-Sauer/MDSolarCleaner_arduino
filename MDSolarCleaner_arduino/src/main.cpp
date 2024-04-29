@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include "MDSolarCleaner_Functions.h"
+#include "pinDefines.h"
 
 // define ISRs
 void countRotation_brush1();
@@ -15,23 +16,6 @@ void countRotation_brush2();
 //GND jeweils an GND
 volatile unsigned int counter_brush1 = 0;  // Zähler für die Drehungen
 volatile unsigned int counter_brush2 = 0;  // Zähler für die Drehungen
-
-//US Sensoren:
-//US-Sensor UP
-#define US_UP_TRIG 4
-#define US_UP_ECHO 5
-
-//US-Sensor DOWN
-#define US_DOWN_TRIG 6
-#define US_DOWN_ECHO 7
-
-//US-Sensor RIGHT
-#define US_RIGHT_TRIG 8
-#define US_RIGHT_ECHO 9
-
-//US-Sensor LEFT
-#define US_LEFT_TRIG 10
-#define US_LEFT_ECHO 11
 
 //Air Temperatur
 #define TEMPSENSPIN 12
