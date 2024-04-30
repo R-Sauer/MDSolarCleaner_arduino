@@ -7,13 +7,12 @@ HCSR04::HCSR04(uint16_t trigger, uint8_t echo)
 
     pinMode(triggPin, OUTPUT);
     pinMode(echoPin, INPUT);
+    digitalWrite(triggPin, LOW);
 }
 
 float HCSR04::readDistance()
 {
     // Sende ein Ultraschall-Puls-Signal aus
-    digitalWrite(triggPin, LOW);
-    delayMicroseconds(2);
     digitalWrite(triggPin, HIGH);
     delayMicroseconds(10);
     digitalWrite(triggPin, LOW);
