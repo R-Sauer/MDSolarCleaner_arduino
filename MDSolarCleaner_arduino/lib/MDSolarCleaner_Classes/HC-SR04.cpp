@@ -1,10 +1,11 @@
 #include "HC-SR04.h"
 
-HCSR04::HCSR04(uint16_t _trigPin, uint8_t _echoPin, uint32_t _pulseTimeout)
+HCSR04::HCSR04(uint16_t _trigPin, uint8_t _echoPin, uint32_t _pulseTimeout, uint32_t _cycleTimeUs)
 {
     triggPin = _trigPin;
     echoPin = _echoPin;
     pulseTimeout = _pulseTimeout;
+    cycleTimeUs = _cycleTimeUs;
 
     pinMode(triggPin, OUTPUT);
     pinMode(echoPin, INPUT);
@@ -19,7 +20,15 @@ float HCSR04::readDistance()
     delayMicroseconds(10);
     digitalWrite(triggPin, LOW);
 
+    // Nimm die Zeit zum Anfang der Messung
+    uint32_t tpin = micros();
     pulseDurationUs = pulseIn(echoPin, HIGH, pulseTimeout);
+
+    // Bestimme die Zeit der Messung in us und warte für die übrige Zykluszeit
+    tpin = micros()-tpin;
+    delayMicroseconds(cycleTimeUs-tpin);
+
+    // Serial.println(cycleTimeUs-tpin,DEC);
 
     if(pulseDurationUs)
     {

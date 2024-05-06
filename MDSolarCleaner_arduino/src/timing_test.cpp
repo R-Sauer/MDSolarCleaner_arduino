@@ -6,7 +6,6 @@
 #include "HC-SR04.h"
 #include "pinDefines.h"
 
-#define US_TIMEOUT 4000
 #define SERIAL_BAUD 115200
 
 enum SerialMSGMode {teleplot = 0, raspberrypi = 1};
@@ -75,10 +74,10 @@ bool serialTimingTest_TP (float distance_up,
 }
 
 // Ultrasonicsensors
-HCSR04 USdistRight  (US_RIGHT_TRIG, US_RIGHT_ECHO, US_TIMEOUT);
-HCSR04 USdistLeft   (US_LEFT_TRIG, US_LEFT_ECHO, US_TIMEOUT);
-HCSR04 USdistUp     (US_UP_TRIG, US_UP_ECHO, US_TIMEOUT);
-HCSR04 USdistDown   (US_DOWN_TRIG, US_DOWN_ECHO, US_TIMEOUT);
+HCSR04 USdistRight  (US_RIGHT_TRIG, US_RIGHT_ECHO);
+HCSR04 USdistLeft   (US_LEFT_TRIG, US_LEFT_ECHO);
+HCSR04 USdistUp     (US_UP_TRIG, US_UP_ECHO);
+HCSR04 USdistDown   (US_DOWN_TRIG, US_DOWN_ECHO);
 
 // IMU
 MPU6050 mpu;
