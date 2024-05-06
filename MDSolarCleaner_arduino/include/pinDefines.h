@@ -15,4 +15,7 @@
 #define US_LEFT_TRIG 10
 #define US_LEFT_ECHO 11
 
+//ACS712 Current Sensor
+#define CURRENT_SENSOR_PIN PIN_A0
+
 #define MEASURE_TIME_PIN 13
