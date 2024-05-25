@@ -23,3 +23,5 @@ bool send_data_to_raspy(float distance_up, float distance_down, float distance_r
                          float distance_left, float temperature, float surface_temp,
                          float humidity, int air_dust_density, float brush1_speed,
                          float brush2_speed, float flow_velocity, float acceleration);
+
+void writeSensorvaluesToSerial(float sensorValues[], size_t len);

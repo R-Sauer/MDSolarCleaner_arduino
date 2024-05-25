@@ -1,134 +1,138 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <MPU6050.h>
 #include <ACS712.h>
 #include "MDSolarCleaner_functions.h"
-#include "HC-SR04.h"
+#include "TLE4935L.h"
 #include "pinDefines.h"
 
 #define SERIAL_BAUD 115200
+#define SENSOR_MSG_FREQUENCY 100
+#define SENSOR_MSG_PERIOD_US 1000000/SENSOR_MSG_FREQUENCY * 1000000
 
 enum SerialMSGMode {teleplot = 0, raspberrypi = 1};
 
 SerialMSGMode serialMSGmode = raspberrypi;
 
-bool serialTimingTest_PI (float distance_up,
-                          float distance_down,
-                          float distance_right,
-                          float distance_left, 
-                          // float temperature, 
-                          // float surface_temp,
-                          // float humidity, 
-                          // int air_dust_density, 
-                          // float brush1_speed,
-                          // float brush2_speed, 
-                          // float flow_velocity, 
-                          float acceleration,
+// define ISRs for brush RPM
+void countRotation_brush1();
+void countRotation_brush2();
+ISR(TIMER4_COMPA_vect);
+
+void serialTimingTest_PI (float brush1_speed,
+                          float brush2_speed, 
                           float current) 
 {
-  String sensorString = String(distance_up) + ";" + 
-                        String(distance_down) + ";" +
-                        String(distance_right) + ";" + 
-                        String(distance_left) + ";" +
-                        // String(temperature) + ";" + 
-                        // String(surface_temp) + ";" +
-                        // String(humidity) + ";" + 
-                        // String(air_dust_density) + ";" +
-                        // String(brush1_speed) + ";" + 
-                        // String(brush2_speed) + ";" +
-                        // String(flow_velocity) + ";" + 
-                        String(acceleration) + ";" +
+  String sensorString = 
+                        String(brush1_speed) + ";" + 
+                        String(brush2_speed) + ";" +
                         String(current);
-
   Serial.println(sensorString);
-  return 1;  // Wenn erfolgreich sende 1 sonst 0
 }
 
-bool serialTimingTest_TP (float distance_up, 
-                          float distance_down, 
-                          float distance_right,
-                          float distance_left, 
-                          // float temperature, 
-                          // float surface_temp,
-                          // float humidity, 
-                          // int air_dust_density, 
-                          // float brush1_speed,
-                          // float brush2_speed, 
-                          // float flow_velocity, 
-                          float acceleration,
+void serialTimingTest_TP (float brush1_speed,
+                          float brush2_speed, 
                           float current) 
 {
-  Serial.print(">Dist_up:");
-  Serial.println(distance_up);
-  Serial.print(">Dist_down:");
-  Serial.println(distance_down);
-  Serial.print(">Dist_right:");
-  Serial.println(distance_right);
-  Serial.print(">Dist_left:");
-  Serial.println(distance_left);
-  Serial.print(">Accel_z:");
-  Serial.println(acceleration);
+  Serial.print(">Brush1_RPM:");
+  Serial.println(brush1_speed);
+  Serial.print(">Brush2_RPM:");
+  Serial.println(brush2_speed);
   Serial.print(">Current:");
   Serial.println(current);
-  return 1;  // Wenn erfolgreich sende 1 sonst 0
 }
-
-// Ultrasonicsensors
-HCSR04 USdistRight  (US_RIGHT_TRIG, US_RIGHT_ECHO);
-HCSR04 USdistLeft   (US_LEFT_TRIG, US_LEFT_ECHO);
-HCSR04 USdistUp     (US_UP_TRIG, US_UP_ECHO);
-HCSR04 USdistDown   (US_DOWN_TRIG, US_DOWN_ECHO);
-
-// IMU
-MPU6050 mpu;
 
 //ACS712-30A Current Sensor
 ACS712 acs(CURRENT_SENSOR_PIN, 5.0, 1023, 66);
 
+//TLE4935L Hall Effect Sensors
+TLE4935L brush1(RPM_BRUSH1_PIN, 2);
+TLE4935L brush2(RPM_BRUSH2_PIN, 2);
+
 // Sensorvariablen
-float distance_right = 0.0;         // [cm]
-float distance_left = 0.0;          // [cm]
-float distance_up = 0.0;            // [cm]
-float distance_down = 0.0;          // [cm]
-float acceleration = 0.0;           // [g]
+float brush1_RPM = 0.0;             // [RPM]
+float brush2_RPM = 0.0;             // [RPM]
 float current = 0.0;                // [A]
+
+// Loop timing variables
+unsigned long loopStartUs = 0;
+unsigned long loopDurationUs = 0;
 
 void setup()
 {
+
     Serial.begin(SERIAL_BAUD);
     
     // Pin für Zeitmessung der Schleife
     pinMode(MEASURE_TIME_PIN, OUTPUT);
-    
-    // Accelerometer
-    Wire.begin();
-    mpu.initialize();
 
     // Current Sensor
     acs.autoMidPoint();
+
+    // Set up Interrupts for brush RPM
+    attachInterrupt(digitalPinToInterrupt(brush1.getSensorPin()), countRotation_brush1, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(brush2.getSensorPin()), countRotation_brush2, CHANGE);
+
+    // // Setting up HW-Timer4 for cyclic RPM calculation
+    // Disable Interrupts for setup
+    cli();
+    //set timer4 interrupt at 0.25Hz
+    TCCR4A = 0;// set entire TCCR1A register to 0
+    TCCR4B = 0;// same for TCCR1B
+    TCNT4  = 0;//initialize counter value to 0
+    // set compare match register for 1hz increments
+    OCR4A = 3905;// = (16*10^6) / (1*4096) - 1 (must be <65536)
+    // turn on CTC mode
+    TCCR4B |= (1 << WGM12);
+    // Set CS12 and CS10 bits for 1024 prescaler
+    TCCR4B |= (1 << CS12) | (1 << CS10);  
+    // enable timer compare interrupt
+    TIMSK4 |= (1 << OCIE4A);
+    // Reenable Interrupts
+    sei();
 }
 
 void loop()
 {
-    distance_right  = USdistRight.readDistance();
-    distance_left   = USdistLeft.readDistance();
-    distance_up     = USdistUp.readDistance();
-    distance_down   = USdistDown.readDistance();
-    acceleration    = read_acceleration(mpu);
-    current         = acs.mA_DC();
+    // Takt current Time
+    loopStartUs = micros();
+
+    current = acs.mA_DC();
+    brush1_RPM = brush1.getLastRPM();
+    brush2_RPM = brush2.getLastRPM();
 
     // Set MEASURE_TIME_PIN for duration of serial-transfer
     digitalWrite(MEASURE_TIME_PIN, HIGH);
+    // Send data over serial interface
     switch (serialMSGmode)
     {
       case teleplot:
-        serialTimingTest_TP(distance_up, distance_down, distance_right, distance_left, acceleration, current);
+        serialTimingTest_TP(brush1_RPM, brush2_RPM, current);
       break;
       case raspberrypi:
-        serialTimingTest_PI(distance_up, distance_down, distance_right, distance_left, acceleration, current);
+        serialTimingTest_PI(brush1_RPM, brush2_RPM, current);
       break;
       default:
       break;
     }
     digitalWrite(MEASURE_TIME_PIN, LOW);
+
+    // Loop timing
+    loopDurationUs = micros()-loopStartUs;
+    delayMicroseconds(SENSOR_MSG_PERIOD_US-loopDurationUs);
 }
+
+void countRotation_brush1() 
+{
+  brush1.incrementEdgeCounter();
+}
+
+void countRotation_brush2() 
+{
+  brush2.incrementEdgeCounter();
+}
+
+ISR(TIMER4_COMPA_vect)
+{
+  brush1.calcRPM();
+  brush2.calcRPM();
+};

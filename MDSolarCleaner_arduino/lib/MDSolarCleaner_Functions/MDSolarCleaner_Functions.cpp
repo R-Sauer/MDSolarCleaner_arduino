@@ -131,3 +131,22 @@ bool send_data_to_raspy(float distance_up, float distance_down, float distance_r
   Serial.println(sensorString);
   return 1;  // Wenn erfolgreich sende 1 sonst 0
 }
+
+void writeSensorvaluesToSerial(float sensorValues[], size_t len)
+{
+    String sensorString;
+    for (size_t i = 0; i < len; i++)
+    {
+      if(i == len-1)
+      {
+        sensorString = String(sensorValues[i]);
+        Serial.println(sensorString);
+      }
+      else
+      {
+        sensorString = String(sensorValues[i]) + ";";
+        Serial.print(sensorString);
+      }
+    }
+    
+}

@@ -5,5 +5,14 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"arduino.h": "c",
+			"wiring_private.h": "c",
+			"pins_arduino.h": "c",
+			"stdio.h": "c",
+			"io.h": "c",
+			"interrupt.h": "c"
+		}
+	}
 }
