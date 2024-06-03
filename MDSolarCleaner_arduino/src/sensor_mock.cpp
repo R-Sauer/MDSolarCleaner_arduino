@@ -30,9 +30,9 @@ void loop(){
     // Generate "sawtooth" shaped sensor data
     if(counter < 500)
     {
-        sensorValues[0] += 1.;
-        sensorValues[1] += 1.;
-        sensorValues[2] += 1.;
+        sensorValues[0] += 1.1;
+        sensorValues[1] += 1.2;
+        sensorValues[2] += 1.3;
         counter++;
     }
     else
