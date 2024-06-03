@@ -37,6 +37,6 @@ float TLE4935L::calcRPM()
     edgeCounter = 0;
     interrupts();
     float edgesPerMin = static_cast<float>(60000000.0/interval * edgeCounterTemp);
-    this->lastRPM = float((edgesPerMin/this->edgesPerCycle)*gearRatio);
+    this->lastRPM = static_cast<float>(round((edgesPerMin/this->edgesPerCycle)*gearRatio));
     return lastRPM;
 }
