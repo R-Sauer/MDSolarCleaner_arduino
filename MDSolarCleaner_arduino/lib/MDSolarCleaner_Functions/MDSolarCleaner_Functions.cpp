@@ -82,7 +82,7 @@ int read_air_dust_density()
 float read_brush_speed(int num, unsigned int counter_brush1, unsigned int counter_brush2) 
 {
   // Berechnung der Geschwindigkeit alle 1000 Millisekunden
-  unsigned long currentTime = millis();
+  // unsigned long currentTime = millis();
   float brush_rotations = 0.0;
   float brush_speed = 0.0;
   if(num == 1){ //Brush 1
@@ -109,8 +109,8 @@ float read_acceleration(MPU6050 &mpu)
 {
   int16_t ax, ay, az;
   mpu.getAcceleration(&ax, &ay, &az);
-  float ax_in_g = ax/16384.0;
-  float ay_in_g = ay/16384.0;
+  //float ax_in_g = ax/16384.0;
+  //float ay_in_g = ay/16384.0;
   float az_in_g = (az/16384.0)+0.2;
 
   return az_in_g;
