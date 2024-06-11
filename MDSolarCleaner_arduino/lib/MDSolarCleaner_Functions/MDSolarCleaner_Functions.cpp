@@ -133,7 +133,7 @@ bool send_data_to_raspy(float distance_up, float distance_down, float distance_r
 }
 
 void writeSensorvaluesToSerial(float sensorValues[], size_t len)
-{
+{ // Hier ggf. statt cast auf String lieber die Werte direkt printen
     String sensorString;
     for (size_t i = 0; i < len; i++)
     {
