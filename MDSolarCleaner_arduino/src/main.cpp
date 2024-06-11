@@ -9,6 +9,8 @@
 #define SENSOR_DATA_FIELDS 3
 #define SENSOR_MSG_FREQUENCY 100
 #define SENSOR_MSG_PERIOD_US 1000000/SENSOR_MSG_FREQUENCY
+#define BRUSH_GEAR_RATIO 2.0
+#define BRUSH_MOTOR_MAGNETS_NUMBER 8
 
 // define ISRs for brush RPM
 void countRotation_brush1();
@@ -16,11 +18,12 @@ void countRotation_brush2();
 ISR(TIMER4_COMPA_vect);
 
 //ACS712-30A Current Sensor
+// 5.0: Voltage Range, 1023: 10Bit Resolution, 66: mV per Bit
 ACS712 acs(CURRENT_SENSOR_PIN, 5.0, 1023, 66);
 
 //TLE4935L Hall Effect Sensors
-TLE4935L brush1(RPM_BRUSH1_PIN, 2);
-TLE4935L brush2(RPM_BRUSH2_PIN, 2);
+TLE4935L brush1(RPM_BRUSH1_PIN, BRUSH_MOTOR_MAGNETS_NUMBER, BRUSH_GEAR_RATIO);
+TLE4935L brush2(RPM_BRUSH2_PIN, BRUSH_MOTOR_MAGNETS_NUMBER, BRUSH_GEAR_RATIO);
 
 // Sensorvariable
 float sensorValues[SENSOR_DATA_FIELDS];
@@ -35,7 +38,8 @@ void setup()
     Serial.begin(SERIAL_BAUD);
 
     // Current Sensor
-    acs.autoMidPoint();
+    // Frequency = 1000 for DC
+    acs.autoMidPoint(1000.0);
 
     // Set up Interrupts for brush RPM
     attachInterrupt(digitalPinToInterrupt(brush1.getSensorPin()), countRotation_brush1, CHANGE);
