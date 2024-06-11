@@ -1,1 +1,1 @@
-Hier wird die Arduino Code zum entwickelt. Diese soll die verscheiden Sensoren einlesen und durch eine serielle Schnittstelle an RasperryPi4 weiterleiten.
+Hier findet sich der Arduino-Code für das Solarreiniger-Projekt des Moduls "Mechatronisches Design". Der Arduino soll die verschiedenen Sensoren einlesen und die Daten über eine serielle Schnittstelle an RasperryPi4 weiterleiten.
