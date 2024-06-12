@@ -4,3 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 ./MDSolarCleaner_rp4/
+*.db*
