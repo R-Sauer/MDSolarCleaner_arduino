@@ -1,3 +1,12 @@
+/*
+author: Raphael Sauer
+mailto: raphael.sauer@haw-hamburg.de
+date:   06/2024
+
+This Program serves as a test, to measure the percentage of the cycle time 
+the Arduino spends sending data to the serial interface with an oscilloscope on pin MEASURE_TIME_PIN.
+*/
+
 #include <Arduino.h>
 #include <SPI.h>
 #include <ACS712.h>

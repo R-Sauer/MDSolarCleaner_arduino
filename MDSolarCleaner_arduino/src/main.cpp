@@ -1,3 +1,11 @@
+/*
+author: Raphael Sauer
+mailto: raphael.sauer@haw-hamburg.de
+date:   06/2024
+
+This program reads out the sensors and sends the values to the serial interface.
+*/
+
 #include <Arduino.h>
 #include <SPI.h>
 #include <ACS712.h>

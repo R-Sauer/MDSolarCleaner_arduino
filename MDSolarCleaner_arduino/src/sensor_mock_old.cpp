@@ -1,3 +1,11 @@
+/*
+author: Raphael Sauer
+mailto: raphael.sauer@haw-hamburg.de
+date:   06/2024
+
+This program sends fake sensordata to the serial port, to test the Python components without actual sensors.
+*/
+
 #include <Arduino.h>
 #include <SPI.h>
 #include "MDSolarCleaner_functions.h"
