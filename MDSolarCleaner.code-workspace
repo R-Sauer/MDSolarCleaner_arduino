@@ -3,6 +3,9 @@
 		{
 			"name": "MD_SolarCleaner",
 			"path": "."
+		},
+		{
+			"path": "../MDSolarCleaner_rp4"
 		}
 	],
 	"settings": {
