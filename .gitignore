@@ -3,5 +3,6 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-./MDSolarCleaner_rp4/
+./MDSolarCleaner_rp4/*
+./MDSolarCleaner_rp4
 *.db*
