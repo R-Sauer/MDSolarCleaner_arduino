@@ -1,4 +1,4 @@
-// Class to read RPM of a rotating part w/ magnets unsing a TLE4935L IC
+// Class to read RPM of a rotating part with "edgesPerCycle" magnets using a TLE4935L IC
 #include <Arduino.h>
 
 #ifndef TLE4935L_
